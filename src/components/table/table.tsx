@@ -1,51 +1,141 @@
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import SearchBar from "../search-bar/search-bar";
-import { Stack, Checkbox, IconButton } from "@mui/material";
+import {
+  Stack,
+  Checkbox,
+  IconButton,
+  styled,
+  TextField,
+  Select,
+  MenuItem,
+} from "@mui/material";
+import TaskForm from "../task-form/task-form";
+import EditIcon from "@mui/icons-material/Edit";
+import SaveIcon from "@mui/icons-material/Save";
+
+const TableContainer = styled(Stack)(({ theme }) => ({
+  width: "80%",
+  margin: "0 auto",
+  padding: theme.spacing(2),
+  [theme.breakpoints.down("md")]: {
+    width: "100%",
+  },
+}));
 
 function TasksTable() {
-  const [data, setData] = useState([
-    { task: "test", category: "cat", id: 1, done: false },
-  ]);
+  const [data, setData] = useState<any[]>([]);
+
+  useEffect(() => {
+    const localStorageData = JSON.parse(
+      localStorage.getItem("formDataArray") || "[]"
+    );
+    setData(localStorageData);
+  }, []);
 
   const [searchTerm, setSearchTerm] = useState("");
+  const [editRowId, setEditRowId] = useState(-1);
 
   const columns: GridColDef[] = [
     {
       field: "task",
-      headerName: "task",
+      headerName: "Task",
       flex: 0.6,
       disableColumnMenu: true,
+      renderCell: (params) => {
+        const rowData = params.row;
+        if (params.row.id === editRowId) {
+          // Render a text field when in edit mode
+          return (
+            <TextField
+              value={rowData.task}
+              onChange={(e) => handleTaskChange(rowData.id, e.target.value)}
+            />
+          );
+        } else {
+          // Display the task value
+          return rowData.task;
+        }
+      },
     },
     {
       field: "category",
-      headerName: "category",
+      headerName: "Category",
       flex: 0.2,
       disableColumnMenu: true,
+      renderCell: (params) => {
+        const rowData = params.row;
+        if (params.row.id === editRowId) {
+          return (
+            <Select
+              value={rowData.category}
+              onChange={(e) => handleCategoryChange(rowData.id, e.target.value)}
+            >
+              <MenuItem value="Category A">Category A</MenuItem>
+              <MenuItem value="Category B">Category B</MenuItem>
+              <MenuItem value="Category C">Category C</MenuItem>
+            </Select>
+          );
+        } else {
+          return rowData.category;
+        }
+      },
+    },
+    {
+      field: "actions",
+      headerName: "",
+      flex: 0.2,
+      disableColumnMenu: true,
+      renderCell: (params) => {
+        const rowData = params.row;
+        return (
+          <Stack direction="row">
+            {params.row.id === editRowId ? (
+              <IconButton onClick={() => handleSaveClick(rowData.id)}>
+                <SaveIcon />
+              </IconButton>
+            ) : (
+              <IconButton onClick={() => handleEditClick(rowData.id)}>
+                <EditIcon />
+              </IconButton>
+            )}
+          </Stack>
+        );
+      },
     },
   ];
 
-  function generateActionsRow(item: any) {
-    return (
-      <Stack>
-        <Checkbox
-          checked={item.done}
-          onChange={() => handleCheckboxChange(item.id)}
-        />
-        <IconButton />
-      </Stack>
-    );
-  }
-
-  function handleCheckboxChange(id: number) {
+  function handleTaskChange(id: number, newValue: string) {
     setData((prevData) => {
       return prevData.map((item) => {
         if (item.id === id) {
-          return { ...item, done: !item.done };
+          return { ...item, task: newValue };
         }
         return item;
       });
     });
+  }
+
+  function handleCategoryChange(id: number, newValue: string) {
+    setData((prevData) => {
+      return prevData.map((item) => {
+        if (item.id === id) {
+          return { ...item, category: newValue };
+        }
+        return item;
+      });
+    });
+  }
+
+  function handleEditClick(id: number) {
+    setEditRowId(id);
+  }
+
+  function handleSaveClick(id: number) {
+    setEditRowId(-1); // Exit edit mode
+    localStorage.setItem("formDataArray", JSON.stringify(data));
+
+    // Save data or perform other actions as needed
   }
 
   function generateRows(data: any[]) {
@@ -56,7 +146,6 @@ function TasksTable() {
         task,
         category,
         done,
-        actions: generateActionsRow(item),
       };
     });
   }
@@ -67,12 +156,21 @@ function TasksTable() {
 
   const rows = generateRows(filteredData);
 
-  const handleSearch = (searchTerm: string) => setSearchTerm(searchTerm);
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) =>
+    setSearchTerm(event.target.value);
 
   return (
     <div>
-      {/* <SearchBar handleSearch={handleSearch} /> */}
-      <DataGrid columns={columns} rows={rows} autoHeight />
+      <Stack style={{ width: "100%" }}>
+        <TableContainer>
+          <DataGrid
+            disableRowSelectionOnClick
+            columns={columns}
+            rows={rows}
+            autoHeight
+          />
+        </TableContainer>
+      </Stack>
     </div>
   );
 }

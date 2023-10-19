@@ -1,5 +1,8 @@
 .App {
   text-align: center;
   min-height: 100vh;
-  background-color: darkslategrey;
 }
+
+.MuiDataGrid-cell:focus {
+  outline: none !important
+  }
