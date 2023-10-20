@@ -1,11 +1,11 @@
 import React from "react";
 import "./App.css";
-import TasksTable from "./components/table/table";
+import ContentContainer from "./components/content-container/content-container";
 
 function App() {
   return (
     <div className="App">
-      <TasksTable />
+      <ContentContainer />
     </div>
   );
 }
