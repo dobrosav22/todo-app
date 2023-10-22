@@ -1,7 +1,7 @@
 import React from "react";
 import { ActionHandlers, TaskData } from "../types/types";
 import { Stack, IconButton, Select, MenuItem, TextField } from "@mui/material";
-
+import { Categories } from "../consts/consts";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import ClearIcon from "@mui/icons-material/Clear";
@@ -14,28 +14,35 @@ function handleSearch(
   setSearchTerm(event.target.value);
 }
 
+function handleCategoryChange(
+  category: String,
+  setSelectedCategory: React.Dispatch<React.SetStateAction<String>>
+) {
+  setSelectedCategory(category);
+}
+
 function generateActionsCell(
   id: number,
   editRowId: number,
   handlers: ActionHandlers
 ) {
   return (
-    <Stack direction="row">
+    <>
       {id === editRowId ? (
-        <div>
+        <Stack direction="row" style={{ paddingLeft: "15px" }}>
           <IconButton onClick={handlers.handleSaveClick}>
             <SaveIcon />
           </IconButton>
           <IconButton onClick={handlers.handleDiscardClick}>
             <ClearIcon />
           </IconButton>
-        </div>
+        </Stack>
       ) : (
         <IconButton onClick={() => handlers.handleEditClick(id)}>
           <EditIcon />
         </IconButton>
       )}
-    </Stack>
+    </>
   );
 }
 
@@ -56,64 +63,91 @@ function generateRows(
   });
 }
 
-const generateColumns = (
+function generateColumns(
   editRowId: number,
   setData: React.Dispatch<React.SetStateAction<TaskData[]>>
-) => [
-  {
-    field: "task",
-    headerName: "Task",
-    flex: 0.6,
-    disableColumnMenu: true,
-    renderCell: (params: GridRenderCellParams) => {
-      const rowData = params.row;
-      if (params.row.id === editRowId) {
-        return (
-          <TextField
-            value={rowData.task}
-            onChange={(e) =>
-              handleChange(rowData.id, "task", e.target.value, setData)
-            }
-          />
-        );
-      } else {
-        return rowData.task;
-      }
+) {
+  const CellRender = (content: string) => (
+    <Stack style={{ padding: "15px", width: "100%" }} alignItems={"flex-start"}>
+      {content}
+    </Stack>
+  );
+  const ActiveCellRender = (children: React.ReactNode) => (
+    <Stack
+      style={{ backgroundColor: "red", width: "100%", height: "100%" }}
+      alignItems={"flex-start"}
+      justifyContent={"center"}
+    >
+      {children}
+    </Stack>
+  );
+  return [
+    {
+      field: "task",
+      headerName: "Task",
+      flex: 0.3,
+      disableColumnMenu: true,
+      sortable: false,
+      renderCell: (params: GridRenderCellParams) => {
+        const rowData = params.row;
+        if (params.row.id === editRowId) {
+          return ActiveCellRender(
+            <TextField
+              value={rowData.task}
+              onChange={(e) =>
+                handleChange(rowData.id, "task", e.target.value, setData)
+              }
+            />
+          );
+        } else {
+          return CellRender(rowData.task);
+        }
+      },
     },
-  },
-  {
-    field: "category",
-    headerName: "Category",
-    flex: 0.2,
-    disableColumnMenu: true,
-    renderCell: (params: GridRenderCellParams) => {
-      const rowData = params.row;
-      if (params.row.id === editRowId) {
-        return (
-          <Select
-            value={rowData.category}
-            onChange={(e) =>
-              handleChange(rowData.id, "category", e.target.value, setData)
-            }
-          >
-            <MenuItem value="Category A">Category A</MenuItem>
-            <MenuItem value="Category B">Category B</MenuItem>
-            <MenuItem value="Category C">Category C</MenuItem>
-          </Select>
-        );
-      } else {
-        return rowData.category;
-      }
+    {
+      field: "category",
+      headerName: "Category",
+      flex: 0.2,
+      disableColumnMenu: true,
+      sortable: false,
+      renderCell: (params: GridRenderCellParams) => {
+        const rowData = params.row;
+        if (params.row.id === editRowId) {
+          return ActiveCellRender(
+            <Select
+              value={rowData.category}
+              onChange={(e) =>
+                handleChange(rowData.id, "category", e.target.value, setData)
+              }
+            >
+              {Categories.map((category, index) => (
+                <MenuItem value={category} key={`category-item-${index}`}>
+                  {category}
+                </MenuItem>
+              ))}
+            </Select>
+          );
+        } else {
+          return CellRender(rowData.category);
+        }
+      },
     },
-  },
-  {
-    field: "actions",
-    headerName: "",
-    flex: 0.3,
-    disableColumnMenu: true,
-    renderCell: (params: GridRenderCellParams) => params.row.actions,
-  },
-];
+    {
+      field: "actions",
+      headerName: "",
+      flex: 0.2,
+      disableColumnMenu: true,
+      sortable: false,
+      renderCell: (params: GridRenderCellParams) => {
+        if (params.row.id === editRowId) {
+          return ActiveCellRender(params.row.actions);
+        } else {
+          return CellRender(params.row.actions);
+        }
+      },
+    },
+  ];
+}
 
 function handleChange(
   id: number,
@@ -131,4 +165,4 @@ function handleChange(
   });
 }
 
-export { handleSearch, generateRows, generateColumns };
+export { handleSearch, generateRows, generateColumns, handleCategoryChange };

@@ -23,4 +23,12 @@ interface ActionHandlers {
 interface ColumnHandlers {
   handleTaskChange: (props: ChangeHandlerType) => void;
 }
-export type { TaskData, ActionHandlers, ColumnHandlers };
+
+enum CategoryType {
+  Groceries,
+  Pets,
+  Finance,
+  Miscelaneous,
+}
+
+export type { TaskData, ActionHandlers, ColumnHandlers, CategoryType };

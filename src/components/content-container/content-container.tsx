@@ -3,7 +3,7 @@ import TasksTable from "../table/table";
 import { Stack, Typography, styled } from "@mui/material";
 import SearchBar from "../search-bar/search-bar";
 import { TaskData } from "../../types/types";
-import { handleSearch } from "../../utils/utils";
+import { handleSearch, handleCategoryChange } from "../../utils/utils";
 
 const Heading = styled(Typography)(({ theme }) => ({
   fontSize: "2rem",
@@ -18,9 +18,12 @@ const Container = styled(Stack)(({ theme }) => ({
 function ContentContainer() {
   const [data, setData] = useState<TaskData[]>([]);
   const [searchTerm, setSearchTerm] = useState<String>("");
+  const [selectedCategory, setSelectedCategory] = useState<String>("");
 
-  const filteredData = data.filter((item) =>
-    item.task.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredData = data.filter(
+    (item) =>
+      item.task.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      (selectedCategory !== "" ? item.category === selectedCategory : true)
   );
 
   return (
@@ -30,6 +33,13 @@ function ContentContainer() {
         handleSearch={(event: React.ChangeEvent<HTMLInputElement>) =>
           handleSearch(event, setSearchTerm)
         }
+        handleCategoryChange={(category: string) =>
+          handleCategoryChange(
+            selectedCategory === category ? "" : category,
+            setSelectedCategory
+          )
+        }
+        selectedCategory={selectedCategory}
       />
       <TasksTable data={filteredData} setData={setData} />
     </Container>

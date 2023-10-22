@@ -3,6 +3,14 @@
   min-height: 100vh;
 }
 
-.MuiDataGrid-cell:focus {
-  outline: none !important
-  }
+.MuiDataGrid-cell:focus, .MuiDataGrid-cell:active {
+  outline: none !important;
+}
+
+.MuiDataGrid-cell{
+  padding:0 !important;
+}
+
+.MuiOutlinedInput-notchedOutline{
+  border:none !important;
+}
