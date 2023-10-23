@@ -1,9 +1,9 @@
 import React from "react";
 
 type TaskData = {
-  id: number;
+  id: number | undefined;
   task: string;
-  category: string;
+  category: string | undefined;
   done: boolean;
 };
 
@@ -18,6 +18,8 @@ interface ActionHandlers {
   handleEditClick: (id: number) => void;
   handleSaveClick: () => void;
   handleDiscardClick: () => void;
+  handleDeleteClick: (id: number) => void;
+  handleCheckboxChange: (id: number, checked: boolean) => void;
 }
 
 interface ColumnHandlers {

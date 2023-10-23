@@ -1,10 +1,20 @@
 import React from "react";
 import { ActionHandlers, TaskData } from "../types/types";
-import { Stack, IconButton, Select, MenuItem, TextField } from "@mui/material";
-import { Categories } from "../consts/consts";
+import {
+  Stack,
+  IconButton,
+  Select,
+  MenuItem,
+  TextField,
+  styled,
+  Checkbox,
+  Theme,
+} from "@mui/material";
+import { Categories, LocalDB } from "../consts/consts";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import ClearIcon from "@mui/icons-material/Clear";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { GridRenderCellParams } from "@mui/x-data-grid";
 
 function handleSearch(
@@ -14,35 +24,65 @@ function handleSearch(
   setSearchTerm(event.target.value);
 }
 
+function handleDataChange(
+  data: TaskData[],
+  setData: React.Dispatch<React.SetStateAction<TaskData[]>>
+) {
+  localStorage.setItem(LocalDB, JSON.stringify(data));
+  setData(data);
+}
+
 function handleCategoryChange(
-  category: String,
-  setSelectedCategory: React.Dispatch<React.SetStateAction<String>>
+  category: string,
+  setSelectedCategory: React.Dispatch<React.SetStateAction<string>>
 ) {
   setSelectedCategory(category);
 }
 
 function generateActionsCell(
   id: number,
+  done: boolean,
   editRowId: number,
   handlers: ActionHandlers
 ) {
+  const ContentContainer = styled(Stack, {
+    shouldForwardProp: (prop) => prop !== "isEdit",
+  })<{ isEdit: boolean }>(({ theme, isEdit }) => ({
+    paddingLeft: isEdit ? "2rem" : "1rem",
+
+    [theme.breakpoints.down("md")]: {
+      paddingLeft: "0.25rem",
+    },
+  }));
+
   return (
-    <>
+    <ContentContainer isEdit={id === editRowId} direction="row">
       {id === editRowId ? (
-        <Stack direction="row" style={{ paddingLeft: "15px" }}>
-          <IconButton onClick={handlers.handleSaveClick}>
-            <SaveIcon />
-          </IconButton>
+        <>
           <IconButton onClick={handlers.handleDiscardClick}>
             <ClearIcon />
           </IconButton>
-        </Stack>
+          <IconButton onClick={handlers.handleSaveClick}>
+            <SaveIcon />
+          </IconButton>
+        </>
       ) : (
-        <IconButton onClick={() => handlers.handleEditClick(id)}>
-          <EditIcon />
-        </IconButton>
+        <>
+          <IconButton onClick={() => handlers.handleEditClick(id)}>
+            <EditIcon />
+          </IconButton>
+          <IconButton onClick={() => handlers.handleDeleteClick(id)}>
+            <DeleteIcon />
+          </IconButton>
+          <Checkbox
+            checked={done}
+            onChange={(e, checked) =>
+              handlers.handleCheckboxChange(id, checked)
+            }
+          />
+        </>
       )}
-    </>
+    </ContentContainer>
   );
 }
 
@@ -58,29 +98,77 @@ function generateRows(
       task,
       category,
       done,
-      actions: generateActionsCell(id, editRowId, handlers),
+      actions: generateActionsCell(id as number, done, editRowId, handlers),
     };
   });
 }
 
 function generateColumns(
   editRowId: number,
-  setData: React.Dispatch<React.SetStateAction<TaskData[]>>
+  editData: TaskData,
+  setEditedData: React.Dispatch<React.SetStateAction<TaskData>>,
+  theme: Theme
 ) {
-  const CellRender = (content: string) => (
-    <Stack style={{ padding: "15px", width: "100%" }} alignItems={"flex-start"}>
+  const InactiveCell = styled(Stack, {
+    shouldForwardProp: (prop) => prop !== "isActions",
+  })<{ isActions?: boolean }>(({ theme, isActions }) => ({
+    padding: "1rem",
+    width: "100%",
+
+    [theme.breakpoints.down("md")]: {
+      padding: isActions ? "0.25rem" : "0.85rem",
+      "& .MuiSvgIcon-root": { fontSize: "1rem" },
+
+      "& .MuiButtonBase-root": {
+        padding: "0.25rem",
+      },
+    },
+  }));
+
+  const ActiveCell = styled(Stack, {
+    shouldForwardProp: (prop) => prop !== "isActions",
+  })<{ isActions?: boolean }>(({ theme, isActions }) => ({
+    width: "100%",
+    height: "100%",
+    backgroundColor: "gray",
+    [theme.breakpoints.down("md")]: {
+      padding: isActions ? "0.25rem" : "0",
+      "& .MuiSvgIcon-root": { fontSize: "1rem" },
+
+      "& .MuiButtonBase-root": {
+        padding: "0.25rem",
+      },
+    },
+  }));
+
+  const CellRender = (content: string, isActions?: boolean) => (
+    <InactiveCell isActions={isActions} alignItems={"flex-start"}>
       {content}
-    </Stack>
+    </InactiveCell>
   );
-  const ActiveCellRender = (children: React.ReactNode) => (
-    <Stack
-      style={{ backgroundColor: "red", width: "100%", height: "100%" }}
+  const ActiveCellRender = (children: React.ReactNode, isActions?: boolean) => (
+    <ActiveCell
+      isActions={isActions}
       alignItems={"flex-start"}
       justifyContent={"center"}
     >
       {children}
-    </Stack>
+    </ActiveCell>
   );
+
+  const ActiveCellStyle = {
+    width: "100%",
+    height: "100%",
+    backgroundColor: "gray",
+    [theme.breakpoints.down("md")]: {
+      padding: "0.25rem",
+      "& .MuiSvgIcon-root": { fontSize: "1rem" },
+      "& .MuiButtonBase-root": {
+        padding: "0.25rem",
+      },
+    },
+  };
+
   return [
     {
       field: "task",
@@ -91,13 +179,20 @@ function generateColumns(
       renderCell: (params: GridRenderCellParams) => {
         const rowData = params.row;
         if (params.row.id === editRowId) {
-          return ActiveCellRender(
-            <TextField
-              value={rowData.task}
-              onChange={(e) =>
-                handleChange(rowData.id, "task", e.target.value, setData)
-              }
-            />
+          return (
+            <Stack
+              alignItems={"flex-start"}
+              justifyContent={"center"}
+              style={ActiveCellStyle}
+            >
+              <TextField
+                className="table-input"
+                defaultValue={editData.task}
+                onChange={(e) =>
+                  handleChange("task", e.target.value, setEditedData)
+                }
+              />
+            </Stack>
           );
         } else {
           return CellRender(rowData.task);
@@ -115,9 +210,10 @@ function generateColumns(
         if (params.row.id === editRowId) {
           return ActiveCellRender(
             <Select
-              value={rowData.category}
+              className="table-input"
+              value={editData.category}
               onChange={(e) =>
-                handleChange(rowData.id, "category", e.target.value, setData)
+                handleChange("category", e.target.value, setEditedData)
               }
             >
               {Categories.map((category, index) => (
@@ -140,9 +236,9 @@ function generateColumns(
       sortable: false,
       renderCell: (params: GridRenderCellParams) => {
         if (params.row.id === editRowId) {
-          return ActiveCellRender(params.row.actions);
+          return ActiveCellRender(params.row.actions, true);
         } else {
-          return CellRender(params.row.actions);
+          return CellRender(params.row.actions, true);
         }
       },
     },
@@ -150,19 +246,17 @@ function generateColumns(
 }
 
 function handleChange(
-  id: number,
   property: string,
   newValue: string,
-  setData: React.Dispatch<React.SetStateAction<TaskData[]>>
+  setEditedData: React.Dispatch<React.SetStateAction<TaskData>>
 ) {
-  setData((prevData) => {
-    return prevData.map((item) => {
-      if (item.id === id) {
-        return { ...item, [property]: newValue };
-      }
-      return item;
-    });
-  });
+  setEditedData((prevData) => ({ ...prevData, [property]: newValue }));
 }
 
-export { handleSearch, generateRows, generateColumns, handleCategoryChange };
+export {
+  handleSearch,
+  generateRows,
+  generateColumns,
+  handleCategoryChange,
+  handleDataChange,
+};

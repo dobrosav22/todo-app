@@ -1,3 +1,9 @@
 const Categories: string[] = ["Groceries", "Pets", "Finance", "Miscelaneous"];
 
-export { Categories };
+const LocalDB = "local_storage_db";
+
+const Colors = {
+  dark: "#0F1535",
+};
+
+export { Categories, LocalDB, Colors };

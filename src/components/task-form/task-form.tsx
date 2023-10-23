@@ -1,29 +1,40 @@
-import React, { useState, useEffect } from "react";
-import {
-  Stack,
-  TextField,
-  Select,
-  Checkbox,
-  MenuItem,
-  Button,
-} from "@mui/material";
+import React, { useState } from "react";
+import { TextField, MenuItem, Select, Button, styled } from "@mui/material";
+import { Categories } from "../../consts/consts";
+import { handleDataChange } from "../../utils/utils";
+import { TaskData } from "../../types/types";
+import Toolbar from "../toolbar/toolbar";
 
-function TaskForm() {
-  const [formData, setFormData] = useState({
+const TextInput = styled(TextField)(() => ({
+  width: "15rem",
+}));
+
+const Dropdown = styled(Select)(({ theme }) => ({
+  textAlign: "start",
+  width: "15rem",
+}));
+
+const StyledButton = styled(Button)(({ theme }) => ({
+  width: "15rem",
+  height: "3.4rem",
+}));
+
+interface TaskFormProps {
+  data: TaskData[];
+  setData: React.Dispatch<React.SetStateAction<TaskData[]>>;
+}
+
+const TaskForm: React.FC<TaskFormProps> = ({ data, setData }) => {
+  const initialData: TaskData = {
     task: "",
-    category: "",
+    category: undefined,
     done: false,
-  });
+    id: undefined,
+  };
 
-  const [localStorageData, setLocalStorageData] = useState<any[]>([]);
+  const [formData, setFormData] = useState(initialData);
 
-  useEffect(() => {
-    // Load data from local storage when the component mounts
-    const localStorageData = JSON.parse(localStorage.getItem("formDataArray") || "[]");
-    setLocalStorageData(localStorageData);
-  }, []);
-
-  const handleInputChange = (e:any) => {
+  const handleInputChange = (e: any) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
@@ -31,62 +42,56 @@ function TaskForm() {
     });
   };
 
-  const handleCheckboxChange = (e:any) => {
-    setFormData({
-      ...formData,
-      done: e.target.checked,
-    });
+  const handleSubmit = () => {
+    const newData = [
+      ...data,
+      {
+        ...formData,
+        id: data.length + 1,
+      },
+    ];
+
+    handleDataChange(newData, setData);
+    setFormData(initialData);
   };
 
-  const handleSubmit = () => {
-    // Update the local state with the new form data
-    const newFormData = {
-      ...formData,
-      id: localStorageData.length + 1, // Set the id
-    };
-    setLocalStorageData([...localStorageData, newFormData]);
-
-    // Update local storage with the updated data
-    localStorage.setItem("formDataArray", JSON.stringify([...localStorageData, newFormData]));
-
-    // Reset the form fields
-    setFormData({
-      task: "",
-      category: "",
-      done: false,
-    });
+  const isFormDisabled = () => {
+    return !formData.category || !formData.task.length;
   };
 
   return (
-    <Stack spacing={2}>
-      <TextField
+    <Toolbar title={"Add new task"}>
+      <TextInput
         name="task"
-        label="Task"
-        variant="outlined"
+        placeholder="Task name"
         value={formData.task}
         onChange={handleInputChange}
       />
-      <Select
+      <Dropdown
+        key={data.length}
+        displayEmpty
         name="category"
-        label="Category"
-        variant="outlined"
-        value={formData.category}
+        renderValue={() => formData.category ?? "Category"}
+        value={formData.category ?? ""}
         onChange={handleInputChange}
       >
-        <MenuItem value="Category A">Category A</MenuItem>
-        <MenuItem value="Category B">Category B</MenuItem>
-        <MenuItem value="Category C">Category C</MenuItem>
-      </Select>
-      <Checkbox
-        name="done"
-        checked={formData.done}
-        onChange={handleCheckboxChange}
-      />
-      <Button variant="contained" color="primary" onClick={handleSubmit}>
-        Update
-      </Button>
-    </Stack>
+        {Categories.map((category, index) => (
+          <MenuItem value={category} key={`category-item-${index}`}>
+            {category}
+          </MenuItem>
+        ))}
+      </Dropdown>
+
+      <StyledButton
+        disabled={isFormDisabled()}
+        variant="contained"
+        color="primary"
+        onClick={handleSubmit}
+      >
+        Create
+      </StyledButton>
+    </Toolbar>
   );
-}
+};
 
 export default TaskForm;

@@ -3,7 +3,7 @@
   min-height: 100vh;
 }
 
-.MuiDataGrid-cell:focus, .MuiDataGrid-cell:active {
+.MuiDataGrid-cell {
   outline: none !important;
 }
 
@@ -11,6 +11,34 @@
   padding:0 !important;
 }
 
+
 .MuiOutlinedInput-notchedOutline{
   border:none !important;
+}
+
+.table-input{
+  font-size: 12px !important;
+}
+
+.MuiInputBase-input{
+  font-size: 12px;
+}  
+
+.MuiInputBase-root{
+  color:#A0AEC0 !important;
+  font-weight: bold !important;
+  border-radius: 15px !important;
+  border:0.5px solid #E2E8F0;
+  height: 2.5rem;
+  background-color: #0F1535 !important;
+
+}
+
+.MuiFormControl-root{
+  background-color: #0F1535 ;
+  border-radius: 15px;
+}
+
+.MuiSvgIcon-root{
+color:#E2E8F0 !important;
 }

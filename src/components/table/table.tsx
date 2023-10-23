@@ -1,17 +1,13 @@
 import { DataGrid } from "@mui/x-data-grid";
 import React, { useState, useEffect } from "react";
-import { Stack, styled } from "@mui/material";
+import { useTheme } from "@mui/material";
 import { TaskData } from "../../types/types";
-import { generateColumns, generateRows } from "../../utils/utils";
-
-const TableContainer = styled(Stack)(({ theme }) => ({
-  width: "80%",
-  margin: "0 auto",
-  padding: theme.spacing(2),
-  [theme.breakpoints.down("md")]: {
-    width: "100%",
-  },
-}));
+import {
+  generateColumns,
+  generateRows,
+  handleDataChange,
+} from "../../utils/utils";
+import { Colors, LocalDB } from "../../consts/consts";
 
 interface TasksTableProps {
   data: TaskData[];
@@ -20,47 +16,70 @@ interface TasksTableProps {
 
 const TasksTable: React.FC<TasksTableProps> = ({ data, setData }) => {
   useEffect(() => {
-    const localStorageData = JSON.parse(
-      localStorage.getItem("formDataArray") || "[]"
-    );
+    const localStorageData = JSON.parse(localStorage.getItem(LocalDB) || "[]");
     setData(localStorageData);
   }, [setData]);
 
   const [editRowId, setEditRowId] = useState(-1);
-  const [editedData, setEditedData] = useState<any>([]);
+  const [editedData, setEditedData] = useState<TaskData | undefined>(undefined);
 
   const handlers = {
     handleEditClick: (id: number) => {
-      const editedDataCopy = [...data];
       setEditRowId(id);
-      setEditedData([...editedDataCopy]);
+      setEditedData(data.find((item) => item.id === id));
     },
     handleSaveClick: () => {
       setEditRowId(-1);
-      localStorage.setItem("formDataArray", JSON.stringify(data));
+      console.log(editedData);
+      const newData = [
+        ...data.filter((item) => item.id !== editedData?.id),
+        editedData,
+      ];
+      handleDataChange(newData as TaskData[], setData);
     },
     handleDiscardClick: () => {
       setEditRowId(-1);
-      setData([...editedData]);
+    },
+    handleDeleteClick: (id: number) => {
+      const newData = data.filter((item) => item.id !== id);
+      setData(newData);
+      handleDataChange(newData, setData);
+    },
+    handleCheckboxChange: (id: number, checked: boolean) => {
+      const newData = data.map((task) => ({
+        ...task,
+        done: task.id === id ? checked : task.done,
+      }));
+      console.log(newData);
+      handleDataChange(newData, setData);
     },
   };
 
   const rows = generateRows(data, editRowId, handlers);
-  const columns = generateColumns(editRowId, setData);
+
+  const theme = useTheme();
+
+  const columns = generateColumns(
+    editRowId,
+    editedData as TaskData,
+    setEditedData as React.Dispatch<React.SetStateAction<TaskData>>,
+    theme
+  );
 
   return (
-    <div>
-      <Stack style={{ width: "100%" }}>
-        <TableContainer>
-          <DataGrid
-            disableRowSelectionOnClick
-            columns={columns}
-            rows={rows}
-            autoHeight
-          />
-        </TableContainer>
-      </Stack>
-    </div>
+    <DataGrid
+      disableRowSelectionOnClick
+      columns={columns}
+      rows={rows}
+      autoHeight
+      hideFooter
+      style={{
+        fontSize: "12px",
+        minWidth: "90%",
+        backgroundColor: Colors.dark,
+        color: "white",
+      }}
+    />
   );
 };
 
