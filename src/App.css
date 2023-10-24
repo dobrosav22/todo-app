@@ -5,26 +5,32 @@
   background-size: cover;
 }
 
+/*Removing the outline on the DataGrid cells, that usually appears on click.*/
 .MuiDataGrid-cell {
   outline: none !important;
 }
 
+/*Removing the outline on the DataGrid column headers, that usually appears on click.*/
 .MuiDataGrid-columnHeader{
   outline: none !important;
 }
 
+/*Removing the default padding of the DataGrid cells, since we want to controll the render.*/
 .MuiDataGrid-cell{
-  padding:0 !important;
+  padding: 0 !important;
 }
 
+/*An SVG icon appearing between the column headers being removed.*/
 .MuiDataGrid-iconSeparator{
   display: none !important;
 }
 
+/*Removal of the outline from the inputs, since it affects the envisioned design.*/
 .MuiOutlinedInput-notchedOutline{
   border:none !important;
 }
 
+/*A custom created class for all the inputs in the DataGrid.*/
 .table-input{
   font-size: 12px !important;
   text-align: start;
@@ -34,10 +40,12 @@
   }
 }
 
+/*A formatting that affects the SearchBar components.*/
 .MuiInputBase-input{
   font-size: 12px !important;
 }  
 
+/*A custom styling for the MUI TextInput, and partially for the Select component.*/
 .MuiInputBase-root{
   color:#A0AEC0 !important;
   font-weight: bold !important;
@@ -51,28 +59,36 @@
   }
 }
 
+/*Additional styling of the Select component.*/
 .MuiFormControl-root{
-  background-color: #0F1535 ;
+  background-color: #0F1535;
   border-radius: 15px;
 }
 
+/*Removing the border and creating a radius on the DataGrid component.*/
 .MuiDataGrid-root{
   border:none !important;
   border-radius: 20px !important;
 }
 
+/*Having changed the separator line of the DataGrid rows, we need this
+*in order to omit having that border on the last row.
+*/
 .MuiDataGrid-row:last-child .MuiDataGrid-withBorderColor {
   border: none !important;
 }
 
+/*Adding a different border color for the rows.*/
 .MuiDataGrid-withBorderColor{
   border-color: #56577A !important;
 }
 
+/*A custom class controlling the style of the first column header.*/
 .first-column{
-  padding-left:1rem !important
+  padding-left:1rem !important;
 }
 
+/*Style for the DataGrid column headers.*/
 .MuiDataGrid-columnHeaderTitle{
   font-size: 1rem;
 }

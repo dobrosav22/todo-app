@@ -30,12 +30,17 @@ const Dropdown = styled(Select)(({ theme }) => ({
   width: "9rem",
 }));
 
+/**A search bar component holding the inputs for the SearchInput and the Dropdown with
+ the options for the categories
+ */
 const SearchBar: React.FC<SearchBarProps> = ({
   handleSearch,
   handleCategoryChange,
   selectedCategory,
 }) => {
+  /**We manually add the 'All' option to the Categories. */
   const options = ["All", ...Categories];
+
   return (
     <Container
       justifyContent={{ md: "end", xs: "space-between" }}

@@ -3,7 +3,9 @@ import React from "react";
 import SearchBar from "../search-bar/search-bar";
 import { TaskData } from "../../types/types";
 import { handleSearch, handleCategoryChange } from "../../utils/utils";
-import AddIcon from '@mui/icons-material/Add';interface ToolbarProps {
+import AddIcon from "@mui/icons-material/Add";
+import { Colors } from "../../consts/consts";
+interface ToolbarProps {
   editData: TaskData | undefined;
   data: TaskData[];
   setEditData: React.Dispatch<React.SetStateAction<TaskData | undefined>>;
@@ -23,11 +25,19 @@ const StyledButton = styled(Button)(({ theme }) => ({
   borderRadius: "15px",
   textTransform: "none",
   fontSize: "12px",
+  backgroundColor: Colors.lighter,
+  border: `0.5px solid ${Colors.light}`,
+  "&.Mui-disabled": {
+    backgroundColor: Colors.light,
+  },
   [theme.breakpoints.down("md")]: {
     width: "100%",
   },
 }));
 
+/**A Toolbar component holding the Button for adding new Tasks,
+ * as well as the SearchBar.
+ */
 const Toolbar: React.FC<ToolbarProps> = ({
   editData,
   setEditData,
@@ -37,6 +47,9 @@ const Toolbar: React.FC<ToolbarProps> = ({
   setSelectedCategory,
   setSearchTerm,
 }) => {
+  //Creating the initial data for a new entry with an id and
+  //an isNew prop, as to be able to differentiate it from
+  //existing entries.
   const getInitialData = (): TaskData => ({
     task: "",
     category: undefined,
@@ -55,6 +68,9 @@ const Toolbar: React.FC<ToolbarProps> = ({
       <StyledButton
         variant="contained"
         disabled={editData !== undefined}
+        //A function that updated the Data state, adding
+        //a row with no data and activating it for edit,
+        //allowing for the user to create a new Task.
         onClick={() => {
           setData([getInitialData(), ...data]);
           setEditData(getInitialData());

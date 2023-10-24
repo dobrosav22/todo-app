@@ -1,3 +1,5 @@
+/**A file containing several static values to be used throughout the application. */
+
 const Categories: string[] = ["Groceries", "Pets", "Finances", "Miscelaneous"];
 
 const LocalDB = "local_storage_db";
@@ -6,6 +8,7 @@ const Colors = {
   dark: "#0F1535",
   white: "#FFFFFF",
   light: "#56577A",
+  lighter: "#0C1A5B",
 };
 
 const MockData = JSON.stringify([

@@ -71,6 +71,10 @@ const TextInput = styled(TextField)(({ theme }) => ({
   },
 }));
 
+/**Since we want the render for the currently edited task to be different,
+ * we have two render methods, for the Active and Inactive cells.
+ * This one renders the currently edited cell.
+ */
 const ActiveActionsCell = (
   handlers: ActionHandlers,
   id: number | undefined,
@@ -90,6 +94,7 @@ const ActiveActionsCell = (
   </>
 );
 
+/**The render for the regular (Inactive) cell. */
 const InactiveActionsCell = (
   handlers: ActionHandlers,
   id: number | undefined,

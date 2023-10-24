@@ -1,5 +1,8 @@
 import React from "react";
 
+/**A types file holding the declarations for several data types
+ * being used throughout the application.
+ */
 type TaskData = {
   id: number | undefined;
   task: string;

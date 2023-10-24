@@ -7,18 +7,23 @@ import { Colors } from "../../consts/consts";
 
 const Heading = styled(Typography)(() => ({
   fontSize: "3rem",
-  width: "100%",
   color: Colors.light,
   padding: "2rem",
   textAlign: "center",
 }));
 
+/**A container component to display the app elements. */
 function ContentContainer() {
+  //The current data being shown.
   const [data, setData] = useState<TaskData[]>([]);
+  //A state for the current data being edited.
   const [editData, setEditData] = useState<TaskData | undefined>(undefined);
+  //The search expression for the filtering function.
   const [searchTerm, setSearchTerm] = useState<string>("");
+  //Category state for the filtering.
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
 
+  //Based on the searchTerm and selectedCategory, we filter out the corresponding data.
   const filteredData = data.filter(
     (item) =>
       item.task.toLowerCase().includes(searchTerm.toLowerCase()) &&

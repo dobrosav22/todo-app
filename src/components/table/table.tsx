@@ -24,18 +24,22 @@ const StyledTable = styled(DataGrid)(() => ({
   color: Colors.white,
 }));
 
+/**A Table component for displaying the Tasks Data. */
 const TasksTable: React.FC<TasksTableProps> = ({
   data,
   setData,
   editData,
   setEditData,
 }) => {
+  //Upon rendering the component, we retrieve any values that exist
+  //in the localStorage, and creating a mock data set if there is no Data.
   useEffect(() => {
     const localStorageData = getLocalStorage();
     setData(sortData(localStorageData));
     generateLocalStorage();
   }, [setData]);
 
+  //Generating the handlers, rows and columns.
   const handlers = generateHandlers(data, setData, editData, setEditData);
 
   const rows = generateRows(data, editData as TaskData, handlers);
