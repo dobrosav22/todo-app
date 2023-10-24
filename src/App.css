@@ -1,9 +1,15 @@
 .App {
   text-align: center;
   min-height: 100vh;
+  background-image: url('/public/bg.jpg');
+  background-size: cover;
 }
 
 .MuiDataGrid-cell {
+  outline: none !important;
+}
+
+.MuiDataGrid-columnHeader{
   outline: none !important;
 }
 
@@ -11,6 +17,9 @@
   padding:0 !important;
 }
 
+.MuiDataGrid-iconSeparator{
+  display: none !important;
+}
 
 .MuiOutlinedInput-notchedOutline{
   border:none !important;
@@ -18,10 +27,15 @@
 
 .table-input{
   font-size: 12px !important;
+  text-align: start;
+
+  .MuiSvgIcon-root{
+    color:white
+  }
 }
 
 .MuiInputBase-input{
-  font-size: 12px;
+  font-size: 12px !important;
 }  
 
 .MuiInputBase-root{
@@ -29,9 +43,12 @@
   font-weight: bold !important;
   border-radius: 15px !important;
   border:0.5px solid #E2E8F0;
-  height: 2.5rem;
+  height: 2rem;
   background-color: #0F1535 !important;
-
+  padding:0.25rem !important;
+  .MuiSvgIcon-root{
+    color:white
+  }
 }
 
 .MuiFormControl-root{
@@ -39,6 +56,23 @@
   border-radius: 15px;
 }
 
-.MuiSvgIcon-root{
-color:#E2E8F0 !important;
+.MuiDataGrid-root{
+  border:none !important;
+  border-radius: 20px !important;
+}
+
+.MuiDataGrid-row:last-child .MuiDataGrid-withBorderColor {
+  border: none !important;
+}
+
+.MuiDataGrid-withBorderColor{
+  border-color: #56577A !important;
+}
+
+.first-column{
+  padding-left:1rem !important
+}
+
+.MuiDataGrid-columnHeaderTitle{
+  font-size: 1rem;
 }

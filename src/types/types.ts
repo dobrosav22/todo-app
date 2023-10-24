@@ -5,6 +5,7 @@ type TaskData = {
   task: string;
   category: string | undefined;
   done: boolean;
+  isNew?: boolean;
 };
 
 type ChangeHandlerType = {
@@ -15,11 +16,11 @@ type ChangeHandlerType = {
 };
 
 interface ActionHandlers {
-  handleEditClick: (id: number) => void;
+  handleEditClick: (id: number | undefined) => void;
   handleSaveClick: () => void;
-  handleDiscardClick: () => void;
-  handleDeleteClick: (id: number) => void;
-  handleCheckboxChange: (id: number, checked: boolean) => void;
+  handleDiscardClick: (id: number | undefined) => void;
+  handleDeleteClick: (id: number | undefined) => void;
+  handleCheckboxChange: (id: number | undefined, checked: boolean) => void;
 }
 
 interface ColumnHandlers {
@@ -29,7 +30,7 @@ interface ColumnHandlers {
 enum CategoryType {
   Groceries,
   Pets,
-  Finance,
+  Finances,
   Miscelaneous,
 }
 

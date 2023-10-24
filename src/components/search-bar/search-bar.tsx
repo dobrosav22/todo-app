@@ -4,10 +4,10 @@ import {
   styled,
   MenuItem,
   Select,
+  Stack,
   SelectChangeEvent,
 } from "@mui/material";
 import { Categories } from "../../consts/consts";
-import Toolbar from "../toolbar/toolbar";
 
 interface SearchBarProps {
   handleSearch: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -15,13 +15,19 @@ interface SearchBarProps {
   selectedCategory: string;
 }
 
+const Container = styled(Stack)(({ theme }) => ({
+  [theme.breakpoints.down("md")]: {
+    width: "100%",
+  },
+}));
+
 const SearchInput = styled(TextField)(() => ({
-  width: "15rem",
+  width: "9rem",
 }));
 
 const Dropdown = styled(Select)(({ theme }) => ({
   textAlign: "start",
-  width: "15rem",
+  width: "9rem",
 }));
 
 const SearchBar: React.FC<SearchBarProps> = ({
@@ -31,7 +37,12 @@ const SearchBar: React.FC<SearchBarProps> = ({
 }) => {
   const options = ["All", ...Categories];
   return (
-    <Toolbar title={"Search and filter"}>
+    <Container
+      justifyContent={{ md: "end", xs: "space-between" }}
+      alignItems={"center"}
+      direction={"row"}
+      gap={2}
+    >
       <SearchInput onChange={handleSearch} placeholder="Type here..." />
       <Dropdown
         renderValue={() =>
@@ -48,7 +59,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
           </MenuItem>
         ))}
       </Dropdown>
-    </Toolbar>
+    </Container>
   );
 };
 

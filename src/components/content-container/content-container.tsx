@@ -1,24 +1,22 @@
 import React, { useState } from "react";
 import TasksTable from "../table/table";
-import { Stack, Typography, styled } from "@mui/material";
-import SearchBar from "../search-bar/search-bar";
+import { Stack, Typography, styled, Container } from "@mui/material";
 import { TaskData } from "../../types/types";
-import { handleSearch, handleCategoryChange } from "../../utils/utils";
-import TaskForm from "../task-form/task-form";
+import Toolbar from "../toolbar/toolbar";
+import { Colors } from "../../consts/consts";
 
 const Heading = styled(Typography)(() => ({
-  fontSize: "2rem",
+  fontSize: "3rem",
   width: "100%",
+  color: Colors.light,
+  padding: "2rem",
   textAlign: "center",
-}));
-
-const Container = styled(Stack)(() => ({
-  width: "100%",
 }));
 
 function ContentContainer() {
   const [data, setData] = useState<TaskData[]>([]);
-  const [searchTerm, setSearchTerm] = useState<String>("");
+  const [editData, setEditData] = useState<TaskData | undefined>(undefined);
+  const [searchTerm, setSearchTerm] = useState<string>("");
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
 
   const filteredData = data.filter(
@@ -28,31 +26,25 @@ function ContentContainer() {
   );
 
   return (
-    <Container alignItems={"center"} gap={2}>
-      <Heading>To-do app</Heading>
-      <Stack
-        direction={{ lg: "row", md: "column" }}
-        spacing={2}
-        style={{ width: "80%" }}
-        justifyContent={"space-evenly"}
-        alignItems={"center"}
-        gap={2}
-      >
-        <SearchBar
-          handleSearch={(event: React.ChangeEvent<HTMLInputElement>) =>
-            handleSearch(event, setSearchTerm)
-          }
-          handleCategoryChange={(category: string) =>
-            handleCategoryChange(
-              selectedCategory === category ? "All" : category,
-              setSelectedCategory
-            )
-          }
+    <Container maxWidth="lg">
+      <Stack alignItems={"center"} gap={2}>
+        <Heading>To-do app</Heading>
+        <Toolbar
+          data={data}
+          editData={editData}
           selectedCategory={selectedCategory}
+          setData={setData}
+          setEditData={setEditData}
+          setSearchTerm={setSearchTerm}
+          setSelectedCategory={setSelectedCategory}
         />
-        <TaskForm data={data} setData={setData} />
+        <TasksTable
+          data={filteredData}
+          setData={setData}
+          editData={editData}
+          setEditData={setEditData}
+        />
       </Stack>
-      <TasksTable data={filteredData} setData={setData} />
     </Container>
   );
 }
