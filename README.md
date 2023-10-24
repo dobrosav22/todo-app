@@ -22,6 +22,8 @@ It provides the user with the overview of the entered tasks, as well as the poss
 
 A the top of the display there is a search field and a dropdown with categories to filter by. Using any of these filters the data and displays only the results.
 
+There is also a functionality that allows for copying the stored task to clipboard.
+
 ## Used resources
 
 This is a Typescript application created using create-react-app. Material UI library has been used for the components.

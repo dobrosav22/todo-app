@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import TasksTable from "../table/table";
-import { Stack, Typography, styled, Container } from "@mui/material";
+import { Stack, Typography, styled, Container, Snackbar } from "@mui/material";
 import { TaskData } from "../../types/types";
 import Toolbar from "../toolbar/toolbar";
 import { Colors } from "../../consts/consts";
@@ -23,6 +23,8 @@ function ContentContainer() {
   //Category state for the filtering.
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
 
+  const [message, setMessage] = useState<string>("");
+
   //Based on the searchTerm and selectedCategory, we filter out the corresponding data.
   const filteredData = data.filter(
     (item) =>
@@ -34,6 +36,13 @@ function ContentContainer() {
     <Container maxWidth="lg">
       <Stack alignItems={"center"} gap={2}>
         <Heading>To-do app</Heading>
+        <Snackbar
+          open={!!message}
+          autoHideDuration={3000}
+          onClose={() => setMessage("")}
+          message={message}
+          anchorOrigin={{ horizontal: "center", vertical: "top" }}
+        />
         <Toolbar
           data={data}
           editData={editData}
@@ -42,12 +51,14 @@ function ContentContainer() {
           setEditData={setEditData}
           setSearchTerm={setSearchTerm}
           setSelectedCategory={setSelectedCategory}
+          setMessage={setMessage}
         />
         <TasksTable
           data={filteredData}
           setData={setData}
           editData={editData}
           setEditData={setEditData}
+          setMessage={setMessage}
         />
       </Stack>
     </Container>

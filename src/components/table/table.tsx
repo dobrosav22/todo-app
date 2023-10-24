@@ -15,6 +15,7 @@ interface TasksTableProps {
   setData: React.Dispatch<React.SetStateAction<TaskData[]>>;
   editData: TaskData | undefined;
   setEditData: React.Dispatch<React.SetStateAction<TaskData | undefined>>;
+  setMessage: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const StyledTable = styled(DataGrid)(() => ({
@@ -30,6 +31,7 @@ const TasksTable: React.FC<TasksTableProps> = ({
   setData,
   editData,
   setEditData,
+  setMessage,
 }) => {
   //Upon rendering the component, we retrieve any values that exist
   //in the localStorage, and creating a mock data set if there is no Data.
@@ -40,7 +42,13 @@ const TasksTable: React.FC<TasksTableProps> = ({
   }, [setData]);
 
   //Generating the handlers, rows and columns.
-  const handlers = generateHandlers(data, setData, editData, setEditData);
+  const handlers = generateHandlers(
+    data,
+    setData,
+    editData,
+    setEditData,
+    setMessage
+  );
 
   const rows = generateRows(data, editData as TaskData, handlers);
 

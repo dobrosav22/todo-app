@@ -59,6 +59,26 @@ function handleChange(
   setEditedData((prevData) => ({ ...prevData, [property]: newValue }));
 }
 
+//A copy function.
+function copyToClipboard(data: TaskData[]) {
+  let text = "";
+
+  data.forEach((task, index) => {
+    const status = task.done ? "done" : "to do";
+    text += `${index + 1}. ${task.task} (${status}) \n`;
+  });
+
+  const tempInput = document.createElement("input");
+  tempInput.value = text;
+  document.body.appendChild(tempInput);
+
+  tempInput.select();
+  tempInput.setSelectionRange(0, 99999);
+
+  document.execCommand("copy");
+  document.body.removeChild(tempInput);
+}
+
 export {
   handleSearch,
   handleChange,
@@ -67,4 +87,5 @@ export {
   getLocalStorage,
   sortData,
   generateLocalStorage,
+  copyToClipboard,
 };

@@ -2,8 +2,15 @@ import { styled, Stack, Button } from "@mui/material";
 import React from "react";
 import SearchBar from "../search-bar/search-bar";
 import { TaskData } from "../../types/types";
-import { handleSearch, handleCategoryChange } from "../../utils/utils";
+import {
+  handleSearch,
+  handleCategoryChange,
+  copyToClipboard,
+  getLocalStorage,
+} from "../../utils/utils";
 import AddIcon from "@mui/icons-material/Add";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+
 import { Colors } from "../../consts/consts";
 interface ToolbarProps {
   editData: TaskData | undefined;
@@ -13,6 +20,7 @@ interface ToolbarProps {
   selectedCategory: string;
   setSelectedCategory: React.Dispatch<React.SetStateAction<string>>;
   setSearchTerm: React.Dispatch<React.SetStateAction<string>>;
+  setMessage: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const Container = styled(Stack)(() => ({
@@ -46,6 +54,7 @@ const Toolbar: React.FC<ToolbarProps> = ({
   selectedCategory,
   setSelectedCategory,
   setSearchTerm,
+  setMessage,
 }) => {
   //Creating the initial data for a new entry with an id and
   //an isNew prop, as to be able to differentiate it from
@@ -78,6 +87,18 @@ const Toolbar: React.FC<ToolbarProps> = ({
         endIcon={<AddIcon />}
       >
         Add new task
+      </StyledButton>
+
+      <StyledButton
+        variant="contained"
+        //A function that copies the localStorage data to clipboard.
+        onClick={() => {
+          setMessage("Copied!");
+          copyToClipboard(getLocalStorage());
+        }}
+        endIcon={<ContentCopyIcon />}
+      >
+        Copy to clipboard
       </StyledButton>
 
       <SearchBar

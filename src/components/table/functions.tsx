@@ -179,7 +179,8 @@ const generateHandlers = (
   data: TaskData[],
   setData: React.Dispatch<React.SetStateAction<TaskData[]>>,
   editData: TaskData | undefined,
-  setEditData: React.Dispatch<React.SetStateAction<TaskData | undefined>>
+  setEditData: React.Dispatch<React.SetStateAction<TaskData | undefined>>,
+  setMessage: React.Dispatch<React.SetStateAction<string>>
 ): ActionHandlers => ({
   //By clicking on the edit button, we activate the Edit mode, declare the
   //current selection as the EditData and allow for entry of any changes.
@@ -193,6 +194,7 @@ const generateHandlers = (
     const newData = [...data.filter((item) => item.id !== editData?.id), rest];
     setEditData(undefined);
     handleDataChange(sortData(newData as TaskData[]), setData);
+    setMessage("Saved!");
   },
   //By clicking on the discard, all changes are discared and state
   //is reverted to the one before activating the edit mode.
@@ -207,6 +209,7 @@ const generateHandlers = (
   handleDeleteClick: (id: number | undefined) => {
     const newData = data.filter((item) => item.id !== id);
     handleDataChange(newData, setData);
+    setMessage("Deleted!");
   },
   //The checkbox toggle, used for updating the task 'done' status.
   handleCheckboxChange: (id: number | undefined, checked: boolean) => {
