@@ -19,6 +19,7 @@ interface ToolbarProps {
   setData: React.Dispatch<React.SetStateAction<TaskData[]>>;
   selectedCategory: string;
   setSelectedCategory: React.Dispatch<React.SetStateAction<string>>;
+  searchTerm: string;
   setSearchTerm: React.Dispatch<React.SetStateAction<string>>;
   setMessage: React.Dispatch<React.SetStateAction<string>>;
 }
@@ -53,6 +54,7 @@ const Toolbar: React.FC<ToolbarProps> = ({
   setData,
   selectedCategory,
   setSelectedCategory,
+  searchTerm,
   setSearchTerm,
   setMessage,
 }) => {
@@ -83,6 +85,7 @@ const Toolbar: React.FC<ToolbarProps> = ({
         onClick={() => {
           setData([getInitialData(), ...data]);
           setEditData(getInitialData());
+          handleSearch("", setSearchTerm);
         }}
         endIcon={<AddIcon />}
       >
@@ -102,8 +105,9 @@ const Toolbar: React.FC<ToolbarProps> = ({
       </StyledButton>
 
       <SearchBar
+        searchTerm={searchTerm}
         handleSearch={(event: React.ChangeEvent<HTMLInputElement>) =>
-          handleSearch(event, setSearchTerm)
+          handleSearch(event.target.value, setSearchTerm)
         }
         handleCategoryChange={(category: string) =>
           handleCategoryChange(

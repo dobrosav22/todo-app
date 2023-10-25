@@ -49,6 +49,7 @@ function ContentContainer() {
           selectedCategory={selectedCategory}
           setData={setData}
           setEditData={setEditData}
+          searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
           setSelectedCategory={setSelectedCategory}
           setMessage={setMessage}

@@ -110,9 +110,10 @@ function generateColumns(
             <TextInput
               className="table-input"
               defaultValue={editData.task}
-              onChange={(e) =>
-                handleChange("task", e.target.value, setEditedData)
-              }
+              onKeyDown={(e) => e.stopPropagation()}
+              onChange={(e) => {
+                handleChange("task", e.target.value, setEditedData);
+              }}
             />,
             "task"
           );

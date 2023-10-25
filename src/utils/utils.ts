@@ -23,10 +23,10 @@ function sortData(data: TaskData[]) {
 
 //Search handler, updating the searchTerm state.
 function handleSearch(
-  event: React.ChangeEvent<HTMLInputElement>,
+  value: string,
   setSearchTerm: React.Dispatch<React.SetStateAction<string>>
 ) {
-  setSearchTerm(event.target.value);
+  setSearchTerm(value);
 }
 
 //Once any change is confirmed, this function updates our

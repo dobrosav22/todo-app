@@ -10,6 +10,7 @@ import {
 import { Categories } from "../../consts/consts";
 
 interface SearchBarProps {
+  searchTerm: string;
   handleSearch: (event: React.ChangeEvent<HTMLInputElement>) => void;
   handleCategoryChange: (category: string) => void;
   selectedCategory: string;
@@ -34,6 +35,7 @@ const Dropdown = styled(Select)(({ theme }) => ({
  the options for the categories
  */
 const SearchBar: React.FC<SearchBarProps> = ({
+  searchTerm,
   handleSearch,
   handleCategoryChange,
   selectedCategory,
@@ -48,7 +50,11 @@ const SearchBar: React.FC<SearchBarProps> = ({
       direction={"row"}
       gap={2}
     >
-      <SearchInput onChange={handleSearch} placeholder="Type here..." />
+      <SearchInput
+        value={searchTerm}
+        onChange={handleSearch}
+        placeholder="Type here..."
+      />
       <Dropdown
         renderValue={() =>
           selectedCategory === "All" ? "Category" : selectedCategory
